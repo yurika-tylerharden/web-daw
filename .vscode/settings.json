@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "web-daw",
+            "database": "${workspaceFolder:web-daw}/backend/db/database.db"
+        }
+    ***REMOVED***,
+    "sqltools.useNodeRuntime": true
+}

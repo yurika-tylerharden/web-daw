@@ -11,6 +11,7 @@ const Toolbar = ({ onTabChange }) => {
                     <Nav.Link eventKey="songs">Songs</Nav.Link>
                     <Nav.Link eventKey="stems">Stems</Nav.Link>
                     <Nav.Link eventKey="band">Band</Nav.Link>
+                    <Nav.Link eventKey="testing">Testing</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

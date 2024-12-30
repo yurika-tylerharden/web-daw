@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors'); // Import CORS middleware
+const { initDb } = require('./db/init');
 
 const app = express();
 const stemsRoutes = require('./routes/stems');
@@ -8,6 +9,9 @@ const stemsRoutes = require('./routes/stems');
 app.use(cors());
 
 app.use(express.json());
+
+// Initialize the database
+initDb();
 
 // API routes
 app.use('/api', stemsRoutes);

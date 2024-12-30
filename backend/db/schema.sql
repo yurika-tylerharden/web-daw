@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS songs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    bpm INTEGER NOT NULL,
+    key TEXT
+);
+
+CREATE TABLE IF NOT EXISTS stems (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    song_id INTEGER NOT NULL,
+    stem_name TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    FOREIGN KEY (song_id) REFERENCES songs(id)
+);

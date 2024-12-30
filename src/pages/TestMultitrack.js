@@ -4,12 +4,12 @@ import Multitrack from 'wavesurfer-multitrack';
 const TestMultitrack = () => {
     const containerRef = useRef(null);
     const [multitrack, setMultitrack***REMOVED*** = useState(null);
-
+    
     useEffect(() => {
         // Fetch the list of stems from the backend
         const fetchStems = async () => {
             try {
-                const response = await fetch('http://localhost:5053/stems');
+                const response = await fetch('http://localhost:5053/api/songs');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -19,7 +19,7 @@ const TestMultitrack = () => {
                 // Map files to tracks
                 const tracks = files.map((file, index) => ({
                     id: index,
-                    url: `http://localhost:5053/stems/${file}`,
+                    url: `http://localhost:5053/api/songs/${file}`,
                     draggable: true,
                     volume: 1,
                     options: {

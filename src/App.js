@@ -3,6 +3,7 @@ import Toolbar from './components/Toolbar';
 import SongsPage from './pages/SongsPage';
 import StemsPage from './pages/StemsPage';
 import BandPage from './pages/BandPage';
+import TestMultitrack from './pages/TestMultitrack';
 
 const App = () => {
     const [currentTab, setCurrentTab***REMOVED*** = useState('songs');
@@ -55,9 +56,19 @@ const App = () => {
                     }
                 />
             )}
+            {currentTab === 'band' && (
+                <BandPage
+                    bandMembers={[***REMOVED***} // Pass actual band members data here
+                    onUpdateMember={(id, instrument) =>
+                        console.log(`Member ${id} assigned to ${instrument}`)
+                    }
+                />
+            )}
+            {currentTab === 'testing' && (
+                <TestMultitrack />
+            )}
         </div>
     );
 };
-
 
 export default App;
