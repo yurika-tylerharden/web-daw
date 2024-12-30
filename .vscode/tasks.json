@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "npm install",
+			"command": "npm",
+			"args": [
+				"install",
+				"--save-dev",
+				"@babel/plugin-proposal-private-property-in-object"
+			***REMOVED***,
+			"options": {
+				"cwd": "${workspaceFolder}/web-daw"
+			},
+			"presentation": {
+				"reveal": "silent"
+			}
+		}
+	***REMOVED***
+}
