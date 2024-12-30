@@ -4,27 +4,30 @@
 
 .stems-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
+    flex-direction: column;
 }
 
 .stem-channel {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 15px;
-    width: 200px;
-    background-color: #282c34;
-    color: white;
-}
-
-.stem-channel h4 {
     margin-bottom: 10px;
 }
 
-.stem-channel button {
-    margin: 5px 0;
+.stem-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 10px;
+}
+
+.stem-controls h4 {
+    margin-bottom: 5px;
+}
+
+.waveform {
+    flex-grow: 1;
+    background: #2D2D2D;
+    border-radius: 10px;
+    height: 80px; /* Match the height set in the WaveSurfer options */
 }

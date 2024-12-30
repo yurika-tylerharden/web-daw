@@ -12,7 +12,7 @@ const parseStems = (folderPath) => {
 
     files.forEach((file) => {
         const ext = path.extname(file).toLowerCase();
-        if (ext !== '.wav' && ext !== '.mp3') return; // Ignore non-audio files
+        if (ext !== '.wav' && ext !== '.m4a' && ext !== '.mp3') return; // Ignore non-audio files
 
         const [songName, bpm, stemName***REMOVED*** = path.basename(file, ext).split('_');
         if (!songs[songName***REMOVED***) {
@@ -26,7 +26,10 @@ const parseStems = (folderPath) => {
 
         songs[songName***REMOVED***.stems.push({
             stemName,
-            filePath: path.join(folderPath, file),
+            filePath: `/stems/${file}`, // Update to use relative URL
+            stemGroup: 'Track', // Default group
+            assigned_to: null, // Default assigned_to
+            volume: 1.0 // Default volume
         });
     });
 

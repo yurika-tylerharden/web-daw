@@ -37,7 +37,7 @@ router.get('/songs', async (req, res) => {
 
             // Insert stems
             for (const stem of stems) {
-                const { stemName, filePath } = stem;
+                const { stemName, filePath, stemGroup, assigned_to, volume } = stem;
 
                 // Check if the stem already exists
                 const existingStem = await new Promise((resolve, reject) => {
@@ -48,7 +48,7 @@ router.get('/songs', async (req, res) => {
                 });
 
                 if (!existingStem) {
-                    db.run('INSERT INTO stems (song_id, stem_name, file_path) VALUES (?, ?, ?)', [songId, stemName, filePath***REMOVED***);
+                    db.run('INSERT INTO stems (song_id, stem_name, file_path, stem_group, assigned_to, volume) VALUES (?, ?, ?, ?, ?, ?)', [songId, stemName, filePath, stemGroup, assigned_to, volume***REMOVED***);
                 }
             }
         }
@@ -56,7 +56,7 @@ router.get('/songs', async (req, res) => {
         // Fetch all songs with stems from the database
         const allSongs = await new Promise((resolve, reject) => {
             db.all(`
-                SELECT songs.id, songs.name, songs.bpm, songs.key, stems.id AS stem_id, stems.stem_name, stems.file_path
+                SELECT songs.id, songs.name, songs.bpm, songs.key, stems.id AS stem_id, stems.stem_name, stems.file_path, stems.stem_group, stems.assigned_to, stems.volume
                 FROM songs
                 LEFT JOIN stems ON songs.id = stems.song_id
             `, (err, rows) => {
@@ -76,7 +76,10 @@ router.get('/songs', async (req, res) => {
                     songsMap[row.id***REMOVED***.stems.push({
                         id: row.stem_id,
                         stemName: row.stem_name,
-                        filePath: row.file_path
+                        filePath: row.file_path,
+                        stemGroup: row.stem_group,
+                        assigned_to: row.assigned_to,
+                        volume: row.volume
                     });
                 });
 

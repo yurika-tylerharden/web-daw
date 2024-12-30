@@ -10,6 +10,7 @@ const App = () => {
     const [songs, setSongs***REMOVED*** = useState([***REMOVED***);
     const [loading, setLoading***REMOVED*** = useState(true);
     const [selectedSong, setSelectedSong***REMOVED*** = useState(null);
+    const [bandMembers, setBandMembers***REMOVED*** = useState([***REMOVED***);
 
     useEffect(() => {
         const fetchSongs = async () => {
@@ -24,12 +25,31 @@ const App = () => {
             }
         };
 
+        const fetchBandMembers = async () => {
+            try {
+                const response = await fetch('http://localhost:5053/api/members');
+                const data = await response.json();
+                setBandMembers(data);
+            } catch (error) {
+                console.error('Error fetching band members:', error);
+            }
+        };
+
         fetchSongs();
+        fetchBandMembers();
     }, [***REMOVED***);
 
     const handleViewStems = (song) => {
         setSelectedSong(song);
         setCurrentTab('stems');
+    };
+
+    const handleUpdateMember = (id, instrument) => {
+        setBandMembers((prevMembers) =>
+            prevMembers.map((member) =>
+                member.id === id ? { ...member, member_instrument: instrument } : member
+            )
+        );
     };
 
     return (
@@ -51,17 +71,16 @@ const App = () => {
                     stems={selectedSong.stems}
                     songName={selectedSong.name}
                     bpm={selectedSong.bpm}
-                    onGroupChange={(stemId, group) =>
-                        console.log(`Stem ${stemId} assigned to ${group}`)
+                    bandMembers={bandMembers}
+                    onGroupChange={(stemId, stemGroup) =>
+                        console.log(`Stem ${stemId} assigned to ${stemGroup}`)
                     }
                 />
             )}
             {currentTab === 'band' && (
                 <BandPage
-                    bandMembers={[***REMOVED***} // Pass actual band members data here
-                    onUpdateMember={(id, instrument) =>
-                        console.log(`Member ${id} assigned to ${instrument}`)
-                    }
+                    bandMembers={bandMembers}
+                    onUpdateMember={handleUpdateMember}
                 />
             )}
             {currentTab === 'testing' && (
