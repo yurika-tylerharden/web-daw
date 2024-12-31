@@ -1,20 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-
-/**
- * Parse the stems folder and return a list of songs with attributes.
- * @param {string} folderPath Path to the stems folder.
- * @returns {Array} Array of song objects.
- */
-const parseStems = (folderPath) => {
-    const files = fs.readdirSync(folderPath); // Read all files in the folder
+const parseStems = async (r2Bucket) => {
+    const list = await r2Bucket.list(); // Fetch objects in the bucket
+    const files = list.objects.map((object) => object.key);
     const songs = {};
 
     files.forEach((file) => {
-        const ext = path.extname(file).toLowerCase();
-        if (ext !== '.wav' && ext !== '.m4a' && ext !== '.mp3') return; // Ignore non-audio files
+        const decodedFile = decodeURIComponent(file); // Decode the filename
+        const ext = decodedFile.split('.').pop().toLowerCase();
+        if (ext !== 'wav' && ext !== 'm4a' && ext !== 'mp3') return; // Ignore non-audio files
 
-        const [songName, bpm, stemName***REMOVED*** = path.basename(file, ext).split('_');
+        const [songName, bpm, stemName***REMOVED*** = decodedFile.split('/').pop().split('_');
         if (!songs[songName***REMOVED***) {
             songs[songName***REMOVED*** = {
                 name: songName,
@@ -26,7 +20,7 @@ const parseStems = (folderPath) => {
 
         songs[songName***REMOVED***.stems.push({
             stemName,
-            filePath: `/stems/${file}`, // Update to use relative URL
+            filePath: file, // Use the full path from R2
             stemGroup: 'Track', // Default group
             assigned_to: null, // Default assigned_to
             volume: 1.0 // Default volume
@@ -36,4 +30,4 @@ const parseStems = (folderPath) => {
     return Object.values(songs); // Convert object to array
 };
 
-module.exports = parseStems;
+export default parseStems;

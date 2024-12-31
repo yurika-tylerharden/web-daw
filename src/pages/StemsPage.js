@@ -11,35 +11,34 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
 
     useEffect(() => {
         const waveSurferInstances = stems.map((stem, index) => {
-            const container = document.getElementById(`waveform-${index}`);
-            const waveSurfer = WaveSurfer.create({
-                container,
-                waveColor: 'hsl(200, 50%, 70%)',
-                progressColor: 'hsl(200, 50%, 50%)',
-                height: 80,
-            });
-            waveSurfer.load(`http://localhost:5053${stem.filePath}`);
-            waveSurfer.on('seek', (progress) => {
-                if (isSeekingRef.current) return; // Prevent recursive seek calls
-                isSeekingRef.current = true;
-                const currentTime = waveSurfer.getCurrentTime();
-                waveSurferInstances.forEach((ws) => {
-                    if (ws !== waveSurfer) {
-                        ws.seekTo(progress);
-                        ws.setCurrentTime(currentTime);
-                    }
-                });
-                isSeekingRef.current = false;
-            });
-            return waveSurfer;
+        const container = document.getElementById(`waveform-${index}`);
+        const waveSurfer = WaveSurfer.create({
+            container,
+            waveColor: 'hsl(200, 50%, 70%)',
+            progressColor: 'hsl(200, 50%, 50%)',
+            height: 80,
         });
-
+        
+        // Just pass the direct URL to WaveSurfer (no JSON parsing):
+        const fileUrl = `http://localhost:8787/api/stems/${stem.file_path}`;
+        waveSurfer.load(fileUrl);
+        waveSurfer.on('seek', (progress) => {
+            if (isSeekingRef.current) return; // Prevent recursive seek calls
+            isSeekingRef.current = true;
+            const currentTime = waveSurfer.getCurrentTime();
+            waveSurferInstances.forEach((ws) => {
+                if (ws !== waveSurfer) {
+                    ws.seekTo(progress);
+                    ws.setCurrentTime(currentTime);
+                }
+            });
+            isSeekingRef.current = false;
+        });
+        return waveSurfer;
+        });
+    
         setWaveSurfers(waveSurferInstances);
-
-        // Cleanup on unmount
-        return () => {
-            waveSurferInstances.forEach((waveSurfer) => waveSurfer.destroy());
-        };
+        return () => waveSurferInstances.forEach((ws) => ws.destroy());
     }, [stems***REMOVED***);
 
     const handlePlayPause = () => {

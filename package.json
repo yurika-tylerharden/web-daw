@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "aws-sdk": "^2.1692.0",
     "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
     "cra-template": "1.2.0",
@@ -13,6 +14,7 @@
     "react-router-dom": "^7.1.1",
     "react-scripts": "5.0.1",
     "sqlite3": "^5.1.7",
+    "typescript": "^4.9.5",
     "wavesurfer-multitrack": "^0.4.12",
     "wavesurfer.js": "^6.6.4",
     "web-vitals": "^4.2.4"
@@ -42,7 +44,10 @@
     ***REMOVED***
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@cloudflare/workers-types": "^4.20241224.0",
+    "vitest": "^2.1.8",
+    "wrangler": "^3.99.0"
   },
   "description": "This project was bootstrapped with [Create React App***REMOVED***(https://github.com/facebook/create-react-app).",
   "main": "index.js",
