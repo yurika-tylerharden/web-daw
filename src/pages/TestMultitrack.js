@@ -17,16 +17,16 @@ const TestMultitrack = () => {
                 console.log('Fetched stems:', files); // Debugging line
 
                 // Map files to tracks
-                const tracks = files.map((file, index) => ({
-                    id: index,
-                    url: `http://localhost:5053/api/songs/${file}`,
-                    draggable: true,
-                    volume: 1,
-                    options: {
-                        waveColor: 'hsl(200, 50%, 70%)',
-                        progressColor: 'hsl(200, 50%, 50%)',
-                    },
-                }));
+                // const tracks = files.map((file, index) => ({
+                //     id: index,
+                //     url: `http://localhost:5053/api/songs/${file}`,
+                //     draggable: true,
+                //     volume: 1,
+                //     options: {
+                //         waveColor: 'hsl(200, 50%, 70%)',
+                //         progressColor: 'hsl(200, 50%, 50%)',
+                //     },
+                // }));
 
                 // Initialize the multitrack mixer
                 const mt = Multitrack.create([
