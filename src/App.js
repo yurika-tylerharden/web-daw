@@ -5,7 +5,7 @@ import Toolbar from './components/Toolbar';
 import SongsPage from './pages/SongsPage';
 import StemsPage from './pages/StemsPage';
 import BandPage from './pages/BandPage';
-import TestMultitrack from './pages/TestMultitrack';
+// import TestMultitrack from './pages/TestMultitrack';
 
 const App = () => {
   const [currentTab, setCurrentTab***REMOVED*** = useState('songs');
@@ -95,9 +95,9 @@ const App = () => {
           onUpdateMember={handleUpdateMember}
         />
       )}
-      {currentTab === 'testing' && (
+      {/* {currentTab === 'testing' && (
         <TestMultitrack />
-      )}
+      )} */}
     </div>
   );
 };
