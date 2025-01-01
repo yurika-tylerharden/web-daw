@@ -15,14 +15,12 @@ export default {
       console.error('Error fetching asset:', e);
       return new Response('Not found', { status: 404 });
     }
-  },
+  }
 };
-
 
 async function handleApiRequest(request, env) {
   const url = new URL(request.url);
   const path = url.pathname.replace('/api', '');
-
 
   if (path === '/songs') {
     return handleSongsRequest(env);
@@ -60,21 +58,20 @@ async function handleStemsRequest(request, env) {
   const key = url.pathname.replace('/api/stems/', '');
 
   try {
-    const signedUrl = await generatePreSignedUrl(env, key);
-    return new Response(
-      JSON.stringify({
-        preSignedUrl: signedUrl,
-      }),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
-      }
-    );
+    const object = await env.STEMS_BUCKET.get(key);
+    if (!object) {
+      return new Response('Not found', { status: 404 });
+    }
+
+    return new Response(object.body, {
+      headers: {
+        'Content-Type': object.httpMetadata.contentType,
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
   } catch (e) {
-    console.error('Error generating pre-signed URL:', e);
-    return new Response('Error generating pre-signed URL', { status: 500 });
+    console.error('Error fetching stem:', e);
+    return new Response('Error fetching stem', { status: 500 });
   }
 }
 
@@ -136,6 +133,7 @@ async function handleProcessStemsRequest(env) {
         continue;
       }
 
+      // Check if the song already exists
       const existingSong = await env.DB.prepare('SELECT * FROM songs WHERE name = ? AND bpm = ?')
         .bind(name, bpm)
         .first();
@@ -144,12 +142,14 @@ async function handleProcessStemsRequest(env) {
       if (existingSong) {
         songId = existingSong.id;
       } else {
+        // Insert new song
         const result = await env.DB.prepare('INSERT INTO songs (name, bpm, key) VALUES (?, ?, ?)')
           .bind(name, bpm, key)
           .run();
         songId = result.lastInsertRowid;
       }
 
+      // Insert stems
       for (const stem of stems) {
         const { stemName, filePath, stemGroup, assigned_to, volume } = stem;
 
@@ -158,6 +158,7 @@ async function handleProcessStemsRequest(env) {
           continue;
         }
 
+        // Check if the stem already exists
         const existingStem = await env.DB.prepare('SELECT * FROM stems WHERE song_id = ? AND stem_name = ?')
           .bind(songId, stemName)
           .first();
@@ -184,7 +185,7 @@ async function handleProcessStemsRequest(env) {
 
 async function handleListObjectsRequest(env) {
   try {
-    const list = await env.STEMS_BUCKET.list();
+    const list = await env.STEMS_BUCKET.list(); // Fetch objects in the bucket
     const objects = list.objects.map((object) => ({
       key: object.key,
       size: object.size,
@@ -218,8 +219,6 @@ async function handleDebugRequest(env) {
     return new Response(`Error fetching debug data: ${error.message}`, { status: 500 });
   }
 }
-
-// Helper functions
 
 async function generatePreSignedUrl(env, key, expiration = 3600) {
   const bucketName = env.BUCKET_NAME;

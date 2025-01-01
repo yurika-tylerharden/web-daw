@@ -1,11 +1,9 @@
-// App.js
-
 import React, { useState, useEffect } from 'react';
 import Toolbar from './components/Toolbar';
 import SongsPage from './pages/SongsPage';
 import StemsPage from './pages/StemsPage';
 import BandPage from './pages/BandPage';
-// import TestMultitrack from './pages/TestMultitrack';
+import TestMultitrack from './pages/TestMultitrack';
 
 const App = () => {
   const [currentTab, setCurrentTab***REMOVED*** = useState('songs');
@@ -18,7 +16,7 @@ const App = () => {
   useEffect(() => {
     const fetchR2BaseUrl = async () => {
       try {
-        const response = await fetch('http://localhost:8787/api/r2-base-url');
+        const response = await fetch('/api/r2-base-url');
         const data = await response.json();
         setR2BaseUrl(data.r2BaseUrl);
       } catch (error) {
@@ -28,7 +26,7 @@ const App = () => {
 
     const fetchSongs = async () => {
       try {
-        const response = await fetch('http://localhost:8787/api/songs');
+        const response = await fetch('/api/songs');
         const data = await response.json();
         setSongs(data);
       } catch (error) {
@@ -40,7 +38,7 @@ const App = () => {
 
     const fetchBandMembers = async () => {
       try {
-        const response = await fetch('http://localhost:8787/api/members');
+        const response = await fetch('/api/members');
         const data = await response.json();
         setBandMembers(data);
       } catch (error) {
@@ -95,9 +93,9 @@ const App = () => {
           onUpdateMember={handleUpdateMember}
         />
       )}
-      {/* {currentTab === 'testing' && (
+      {currentTab === 'testing' && (
         <TestMultitrack />
-      )} */}
+      )}
     </div>
   );
 };
