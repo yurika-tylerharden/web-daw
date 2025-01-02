@@ -1,9 +1,26 @@
 // functions/api/songs/index.js
-
 export const onRequestGet = async ({ env }) => {
     try {
+      // 1. Fetch all songs from DB
       const { results } = await env.DB.prepare('SELECT * FROM songs').all();
-      return new Response(JSON.stringify(results), {
+  
+      // 2. For each song, fetch its stems from the 'stems' table
+      const songsWithStems = await Promise.all(
+        results.map(async (song) => {
+          // stems => SELECT * FROM stems WHERE song_id = ?
+          const stemsData = await env.DB.prepare('SELECT * FROM stems WHERE song_id = ?')
+            .bind(song.id)
+            .all();
+  
+          // Include stems array in the returned song object
+          return {
+            ...song,
+            stems: stemsData.results || [***REMOVED***,
+          };
+        })
+      );
+  
+      return new Response(JSON.stringify(songsWithStems), {
         headers: { 'Content-Type': 'application/json' },
         status: 200,
       });
@@ -13,24 +30,4 @@ export const onRequestGet = async ({ env }) => {
     }
   };
   
-  export const onRequestPost = async ({ env, request }) => {
-    try {
-      const body = await request.json();
-      // e.g. { name, bpm, key }
-      const result = await env.DB.prepare(`
-        INSERT INTO songs (name, bpm, key)
-        VALUES (?, ?, ?)
-      `)
-        .bind(body.name, body.bpm, body.key)
-        .run();
-  
-      const newSongId = result.lastInsertRowid;
-      return new Response(JSON.stringify({ id: newSongId }), {
-        headers: { 'Content-Type': 'application/json' },
-        status: 201,
-      });
-    } catch (error) {
-      console.error('Error creating song:', error);
-      return new Response('Error creating song', { status: 500 });
-    }
-  };
+  // optional: onRequestPost, etc. for creating songs
