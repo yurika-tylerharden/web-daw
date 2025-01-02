@@ -28,7 +28,7 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
       console.log(`Encoded key: ${encodedKey}`);
       // If you want to rely on the same domain:
       const fileUrl = `/api/stems/${encodedKey}`;
-      console .log(`File URL: ${fileUrl}`);
+      console.log(`File URL: ${fileUrl}`);
       
 
       waveSurfer.load(fileUrl);
