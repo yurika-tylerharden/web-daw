@@ -13,7 +13,7 @@ const App = () => {
   const [loading, setLoading***REMOVED*** = useState(true);
   const [selectedSong, setSelectedSong***REMOVED*** = useState(null);
   const [bandMembers, setBandMembers***REMOVED*** = useState([***REMOVED***);
-  const [r2BaseUrl, setR2BaseUrl***REMOVED*** = useState('');
+  // const [r2BaseUrl, setR2BaseUrl***REMOVED*** = useState('');
 
   useEffect(() => {
 
@@ -80,7 +80,6 @@ const App = () => {
           bpm={selectedSong.bpm}
           bandMembers={bandMembers}
           // If you need the base URL in StemsPage, pass it:
-          r2BaseUrl={r2BaseUrl} 
         />
       )}
       {currentTab === 'band' && (
