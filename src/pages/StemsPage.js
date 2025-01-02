@@ -21,12 +21,15 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
         progressColor: 'hsl(200, 50%, 50%)',
         height: 80,
       });
-
+      console.log(`Stem file path: ${stem.file_path}`);
       // Example: If your route is /api/stems/:key
       // and your worker script decodes the key, we can do:
-      const encodedKey = encodeURIComponent(stem.filePath);
+      const encodedKey = encodeURIComponent(stem.file_path);
+      console.log(`Encoded key: ${encodedKey}`);
       // If you want to rely on the same domain:
       const fileUrl = `/api/stems/${encodedKey}`;
+      console .log(`File URL: ${fileUrl}`);
+      
 
       waveSurfer.load(fileUrl);
 
