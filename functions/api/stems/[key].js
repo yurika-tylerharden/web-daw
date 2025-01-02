@@ -1,7 +1,8 @@
+// functions/api/stems/[key***REMOVED***.js
+
 export const onRequestGet = async ({ env, params }) => {
     try {
-      // The route param might be "AROUND_110_%20BASS%20GTR%20CLEAN.m4a"
-      // so decode it to "AROUND_110_ BASS GTR CLEAN.m4a"
+      // decode the param so spaces can be handled
       const key = decodeURIComponent(params.key);
   
       const object = await env.STEMS_BUCKET.get(key);
@@ -12,11 +13,23 @@ export const onRequestGet = async ({ env, params }) => {
       return new Response(object.body, {
         headers: {
           'Content-Type': object.httpMetadata?.contentType || 'application/octet-stream',
-          'Access-Control-Allow-Origin': '*',
         },
+        status: 200,
       });
     } catch (error) {
-      console.error('Error reading R2 object:', error);
-      return new Response('Error reading R2 object', { status: 500 });
+      console.error('Error retrieving stem:', error);
+      return new Response('Error retrieving stem', { status: 500 });
+    }
+  };
+  
+  export const onRequestDelete = async ({ env, params }) => {
+    try {
+      const key = decodeURIComponent(params.key);
+  
+      await env.STEMS_BUCKET.delete(key);
+      return new Response(`Deleted stem ${key}`, { status: 200 });
+    } catch (error) {
+      console.error('Error deleting stem:', error);
+      return new Response('Error deleting stem', { status: 500 });
     }
   };
