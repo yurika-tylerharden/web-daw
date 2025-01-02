@@ -1,13 +1,14 @@
 export const onRequestGet = async ({ env, params }) => {
     try {
-      const key = params.key; // from the [key***REMOVED*** in the file name
-      const object = await env.STEMS_BUCKET.get(key);
+      // The route param might be "AROUND_110_%20BASS%20GTR%20CLEAN.m4a"
+      // so decode it to "AROUND_110_ BASS GTR CLEAN.m4a"
+      const key = decodeURIComponent(params.key);
   
+      const object = await env.STEMS_BUCKET.get(key);
       if (!object) {
         return new Response('File not found', { status: 404 });
       }
   
-      // Return the file's body
       return new Response(object.body, {
         headers: {
           'Content-Type': object.httpMetadata?.contentType || 'application/octet-stream',
