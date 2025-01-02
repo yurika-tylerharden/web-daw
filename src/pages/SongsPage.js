@@ -1,11 +1,14 @@
-import React from 'react';
+// SongsPage.js
+
 import { Table, Button } from 'react-bootstrap';
 
 const SongsPage = ({ songs, onSelectSong, onViewStems }) => {
   if (!songs || songs.length === 0) {
     return <p>No songs available</p>;
   }
+
   console.log('Songs:', songs);
+
   return (
     <div className="songs-page">
       <h2>Songs</h2>
@@ -27,7 +30,10 @@ const SongsPage = ({ songs, onSelectSong, onViewStems }) => {
               <td>{song.key}</td>
               <td>{song.stems ? song.stems.length : 0}</td>
               <td>
-                <Button variant="primary" onClick={() => onViewStems(song)}>
+                <Button variant="primary" onClick={(e) => {
+                  e.stopPropagation(); // Avoid selecting row if you only want to handle the button
+                  onViewStems(song);
+                }}>
                   View Stems
                 </Button>
               </td>

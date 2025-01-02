@@ -1,3 +1,5 @@
+// App.js
+
 import React, { useState, useEffect } from 'react';
 import Toolbar from './components/Toolbar';
 import SongsPage from './pages/SongsPage';
@@ -14,16 +16,8 @@ const App = () => {
   const [r2BaseUrl, setR2BaseUrl***REMOVED*** = useState('');
 
   useEffect(() => {
-    const fetchR2BaseUrl = async () => {
-      try {
-        const response = await fetch('/api/r2-base-url');
-        const data = await response.json();
-        setR2BaseUrl(data.r2BaseUrl);
-      } catch (error) {
-        console.error('Error fetching R2 base URL:', error);
-      }
-    };
 
+    // 2. Fetch songs from /api/songs
     const fetchSongs = async () => {
       try {
         const response = await fetch('/api/songs');
@@ -36,9 +30,11 @@ const App = () => {
       }
     };
 
+    // 3. Instead of /api/members, use /api/band if that's your new route
     const fetchBandMembers = async () => {
       try {
-        const response = await fetch('/api/members');
+        // ADJUSTED: 'members' => 'band' to match your new route
+        const response = await fetch('/api/band');
         const data = await response.json();
         setBandMembers(data);
       } catch (error) {
@@ -46,7 +42,6 @@ const App = () => {
       }
     };
 
-    fetchR2BaseUrl();
     fetchSongs();
     fetchBandMembers();
   }, [***REMOVED***);
@@ -84,7 +79,8 @@ const App = () => {
           songName={selectedSong.name}
           bpm={selectedSong.bpm}
           bandMembers={bandMembers}
-          r2BaseUrl={r2BaseUrl} // Pass the R2 base URL to StemsPage
+          // If you need the base URL in StemsPage, pass it:
+          r2BaseUrl={r2BaseUrl} 
         />
       )}
       {currentTab === 'band' && (
