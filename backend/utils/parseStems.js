@@ -8,7 +8,9 @@ const parseStems = async (r2Bucket) => {
         const ext = decodedFile.split('.').pop().toLowerCase();
         if (ext !== 'wav' && ext !== 'm4a' && ext !== 'mp3') return; // Ignore non-audio files
 
-        const [songName, bpm, stemName***REMOVED*** = decodedFile.split('/').pop().split('_');
+        const [songName, bpm, stemNameWithExt***REMOVED*** = decodedFile.split('/').pop().split('_');
+        const stemName = stemNameWithExt.replace(/\.[^/.***REMOVED***+$/, ""); // Remove file extension
+
         if (!songs[songName***REMOVED***) {
             songs[songName***REMOVED*** = {
                 name: songName,

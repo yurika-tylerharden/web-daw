@@ -1,0 +1,1 @@
+wrangler d1 execute web-daw --file backend/db/schema.sql

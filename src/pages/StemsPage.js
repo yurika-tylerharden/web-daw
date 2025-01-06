@@ -1,44 +1,72 @@
-// StemsPage.js
-
 import { useEffect, useRef, useState } from 'react';
-import { Button, Dropdown } from 'react-bootstrap';
 import WaveSurfer from 'wavesurfer.js';
+import StemChannel from '../components/StemChannel';
+import PlayerControls from '../components/PlayerControls';
 
 const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   const [waveSurfers, setWaveSurfers***REMOVED*** = useState([***REMOVED***);
   const [isPlaying, setIsPlaying***REMOVED*** = useState(false);
   const [muteStatus, setMuteStatus***REMOVED*** = useState({});
   const [soloStatus, setSoloStatus***REMOVED*** = useState({});
+  const [currentTime, setCurrentTime***REMOVED*** = useState(0);
+  const [duration, setDuration***REMOVED*** = useState(0);
+  const [assignedStems, setAssignedStems***REMOVED*** = useState({ Band: [***REMOVED***, Track: [***REMOVED***, Click: [***REMOVED*** });
+
+  // State to track which groups are collapsed
+  // If true = collapsed, false = expanded
+  const [groupCollapsed, setGroupCollapsed***REMOVED*** = useState({
+    Band: false,
+    Track: false,
+    Click: false,
+  });
+
+  
   const isSeekingRef = useRef(false);
 
   useEffect(() => {
-    // Create an array of WaveSurfer instances:
-    const waveSurferInstances = stems.map((stem, index) => {
-      const container = document.getElementById(`waveform-${index}`);
+    // Initialize assigned stems
+    const initialAssignedStems = { Band: [***REMOVED***, Track: [***REMOVED***, Click: [***REMOVED*** };
+    stems.forEach((stem, index) => {
+      const group = stem.stem_group || 'Band';
+      initialAssignedStems[group***REMOVED***.push({ ...stem, index });
+    });
+    setAssignedStems(initialAssignedStems);
+  }, [stems***REMOVED***);
+
+  useEffect(() => {
+    // Create an array of WaveSurfer instances after the DOM elements are rendered
+    const waveSurferInstances = [***REMOVED***;
+    // Flatten all stems from the three groups into one array
+    const allStems = [...assignedStems.Band, ...assignedStems.Track, ...assignedStems.Click***REMOVED***;
+
+    allStems.forEach((stem) => {
+      const container = document.getElementById(`waveform-${stem.index}`);
+      if (!container) {
+        console.error(`Container element not found for waveform-${stem.index}`);
+        return;
+      }
       const waveSurfer = WaveSurfer.create({
         container,
-        waveColor: 'hsl(200, 50%, 70%)',
-        progressColor: 'hsl(200, 50%, 50%)',
-        height: 80,
+        waveColor: '#999',          // wave color
+        progressColor: '#4DA2FF',   // progress color
+        backgroundColor: '#1b1b1b', // background behind the wave
+        cursorColor: '#fff',        // cursor color
+        height: 64,                 // wave height
+        responsive: true,           // wave resizes with container
+        minWidth: 50,
       });
-      console.log(`Stem file path: ${stem.file_path}`);
-      // Example: If your route is /api/stems/:key
-      // and your worker script decodes the key, we can do:
       const encodedKey = encodeURIComponent(stem.file_path);
-      console.log(`Encoded key: ${encodedKey}`);
-      // If you want to rely on the same domain:
       const fileUrl = `/api/stems/${encodedKey}`;
-      console.log(`File URL: ${fileUrl}`);
-      
 
       waveSurfer.load(fileUrl);
 
+      // Sync seeking across waveSurfers
       waveSurfer.on('seek', (progress) => {
         if (isSeekingRef.current) return;
         isSeekingRef.current = true;
         const currentTime = waveSurfer.getCurrentTime();
         waveSurferInstances.forEach((ws) => {
-          if (ws !== waveSurfer) {
+          if (ws && ws !== waveSurfer) {
             ws.seekTo(progress);
             ws.setCurrentTime(currentTime);
           }
@@ -46,44 +74,138 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
         isSeekingRef.current = false;
       });
 
-      return waveSurfer;
+      // Update the "global" currentTime
+      waveSurfer.on('audioprocess', () => {
+        setCurrentTime(waveSurfer.getCurrentTime());
+      });
+
+      // Update the "global" duration
+      waveSurfer.on('ready', () => {
+        setDuration((prevDuration) => {
+          // If multiple stems have different durations, pick the max
+          return Math.max(prevDuration, waveSurfer.getDuration());
+        });
+      });
+
+      waveSurferInstances[stem.index***REMOVED*** = waveSurfer;
     });
 
     setWaveSurfers(waveSurferInstances);
 
     return () => {
-      waveSurferInstances.forEach((ws) => ws.destroy());
+      waveSurferInstances.forEach((ws) => ws && ws.destroy());
     };
-  }, [stems***REMOVED***);
+  }, [assignedStems***REMOVED***);
 
+  // Toggle collapsible group
+  // In your toggleGroupCollapse function
+
+  
+  const toggleGroupCollapse = (group) => {
+    setGroupCollapsed((prev) => ({
+      ...prev,
+      [group***REMOVED***: !prev[group***REMOVED***,
+    }));
+  };
+  
   const handlePlayPause = () => {
     if (isPlaying) {
-      waveSurfers.forEach((ws) => ws.pause());
+      waveSurfers.forEach((ws) => ws && ws.pause());
       setIsPlaying(false);
     } else {
-      waveSurfers.forEach((ws) => ws.play());
+      waveSurfers.forEach((ws) => ws && ws.play());
       setIsPlaying(true);
     }
+  };
+
+  const handleRewind = () => {
+    waveSurfers.forEach((ws) => {
+      if (!ws) return;
+      const newTime = Math.max(ws.getCurrentTime() - 15, 0);
+      ws.setCurrentTime(newTime);
+    });
+    setCurrentTime((prevTime) => Math.max(prevTime - 15, 0));
+  };
+
+  const handleSkip = () => {
+    waveSurfers.forEach((ws) => {
+      if (!ws) return;
+      const newTime = Math.min(ws.getCurrentTime() + 15, ws.getDuration());
+      ws.setCurrentTime(newTime);
+    });
+    setCurrentTime((prevTime) => Math.min(prevTime + 15, duration));
   };
 
   const handleMute = (index) => {
     const isMuted = !muteStatus[index***REMOVED***;
     setMuteStatus((prev) => ({ ...prev, [index***REMOVED***: isMuted }));
-    waveSurfers[index***REMOVED***?.setMute(isMuted);
+
+    if (waveSurfers[index***REMOVED***) {
+      waveSurfers[index***REMOVED***.setMute(isMuted);
+    }
   };
 
   const handleSolo = (index) => {
-    const isSoloed = !soloStatus[index***REMOVED***;
-    setSoloStatus((prev) => ({ ...prev, [index***REMOVED***: isSoloed }));
-    // TODO: Implement actual solo logic
+    setSoloStatus((prev) => {
+      const newSolo = { ...prev, [index***REMOVED***: !prev[index***REMOVED*** };
+      const soloedTracks = Object.keys(newSolo).filter((key) => newSolo[key***REMOVED***);
+
+      if (soloedTracks.length > 0) {
+        // Mute all non-solo tracks
+        waveSurfers.forEach((ws, i) => {
+          if (!ws) return;
+          if (soloedTracks.includes(i.toString())) {
+            ws.setMute(false);
+          } else {
+            ws.setMute(true);
+          }
+        });
+      } else {
+        // If no solos, restore to "muteStatus"
+        waveSurfers.forEach((ws, i) => {
+          if (!ws) return;
+          ws.setMute(!!muteStatus[i***REMOVED***);
+        });
+      }
+
+      return newSolo;
+    });
   };
 
   const handleZoom = (value) => {
-    waveSurfers.forEach((ws) => ws.zoom(value));
+    waveSurfers.forEach((ws) => ws.zoom(Number(value)));
   };
 
-  const handleAssign = (stemIndex, stemGroup) => {
-    // If you want to pass back changes to parent:
+  const handleAssign = async (stemIndex, stemGroup) => {
+    const updatedStems = { ...assignedStems };
+    const stem = stems[stemIndex***REMOVED***;
+
+    // Remove stem from its current group
+    Object.keys(updatedStems).forEach((group) => {
+      updatedStems[group***REMOVED*** = updatedStems[group***REMOVED***.filter((s) => s.index !== stemIndex);
+    });
+
+    // Add stem to the new group
+    updatedStems[stemGroup***REMOVED***.push({ ...stem, index: stemIndex });
+
+    setAssignedStems(updatedStems);
+
+    // Update the stem group in the database
+    try {
+      const response = await fetch(`/api/stems/update-group`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ file_path: stem.file_path, stem_group: stemGroup }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update stem group');
+      }
+    } catch (error) {
+      console.error('Error updating stem group:', error);
+    }
+
     if (onGroupChange) {
       onGroupChange(stemIndex, stemGroup);
     }
@@ -91,57 +213,49 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
 
   return (
     <div className="stems-page">
-      <h2>{`Stems for ${songName} (BPM: ${bpm})`}</h2>
-      <div style={{ marginBottom: '1em' }}>
-        <Button onClick={handlePlayPause}>
-          {isPlaying ? 'Pause' : 'Play'}
-        </Button>
-        <input
-          type="range"
-          min="10"
-          max="100"
-          defaultValue="20"
-          onChange={(e) => handleZoom(e.target.valueAsNumber)}
-          style={{ marginLeft: '1em', width: '300px' }}
-        />
-      </div>
+      <h2 className="stems-page-title">{`Stems for ${songName} (BPM: ${bpm})`}</h2>
       <div className="stems-container">
-        {stems.map((stem, index) => (
-          <div key={index} className="stem-channel">
-            <div className="stem-controls">
-              <h4>{stem.stemName}</h4>
-              <Button
-                variant={muteStatus[index***REMOVED*** ? 'secondary' : 'danger'}
-                onClick={() => handleMute(index)}
-              >
-                {muteStatus[index***REMOVED*** ? 'Unmute' : 'Mute'}
-              </Button>
-              <Button
-                variant={soloStatus[index***REMOVED*** ? 'primary' : 'secondary'}
-                onClick={() => handleSolo(index)}
-              >
-                Solo
-              </Button>
-              <Dropdown onSelect={(group) => handleAssign(index, group)}>
-                <Dropdown.Toggle variant="info" id={`dropdown-${stem.stemName}`}>
-                  Assign
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item eventKey="Backing Track">
-                    Assign to Backing Track
-                  </Dropdown.Item>
-                  {bandMembers.map((member) => (
-                    <Dropdown.Item key={member.id} eventKey={member.member_name}>
-                      Assign to {member.member_name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
+        {['Band', 'Track', 'Click'***REMOVED***.map((group) => (
+          <div key={group} className="stems-group">
+            <div className="stems-group-header" onClick={() => toggleGroupCollapse(group)}>
+              <h3>{group}</h3>
+              {/* <span className="collapse-icon">
+                {groupCollapsed[group***REMOVED*** ? '▸' : '▾'}
+              </span> */}
             </div>
-            <div className="waveform" id={`waveform-${index}`}></div>
+            {!groupCollapsed[group***REMOVED*** && (
+              <div className="stems-group-body">
+                {assignedStems[group***REMOVED***.map((stem) => (
+                  <StemChannel
+                    key={stem.index}
+                    stem={stem}
+                    index={stem.index}
+                    muteStatus={muteStatus}
+                    soloStatus={soloStatus}
+                    handleMute={handleMute}
+                    handleSolo={handleSolo}
+                    handleAssign={handleAssign}
+                    bandMembers={bandMembers}
+                    hidden={groupCollapsed[group***REMOVED***} // <--- pass this down
+                  />
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>
+
+      {/* Sticky Footer Player Controls */}
+      <PlayerControls
+        isPlaying={isPlaying}
+        handlePlayPause={handlePlayPause}
+        handleRewind={handleRewind}
+        handleSkip={handleSkip}
+        currentTime={currentTime}
+        duration={duration}
+        bpm={bpm}
+        handleZoom={handleZoom}
+      />
     </div>
   );
 };

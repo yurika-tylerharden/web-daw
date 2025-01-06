@@ -17,10 +17,154 @@ body {
   height: 100%;
 }
 
-.songs-page,
-.stems-page,
-.band-page {
+
+
+/* ========== StemsPage styles ========== */
+.stems-page {
+  /* Ensure the page is tall enough to scroll, if desired */
+  min-height: 100vh; 
+  position: relative;
+  /* Padding at the bottom so the content doesn't run behind the controls */
+  padding-bottom: 80px; 
+}
+
+.stems-page-title {
+  padding: 1rem;
+  margin: 0;
+  border-bottom: 1px solid #333;
+  text-align: center;
+}
+
+.stems-container {
+  padding: 1rem;
+}
+
+/* ========== Group styles ========== */
+.stems-group {
+  margin-bottom: 1.5rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #1f1f1f;
+}
+
+.stems-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #2a2a2a;
+  cursor: pointer;
+}
+
+.stems-group-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.stems-group-header .collapse-icon {
+  font-size: 1.2rem;
+}
+
+.stems-group-body {
+  padding: 0.75rem 1rem;
+}
+
+/* ========== StemChannel styles ========== */
+/* Ensure the stem-channel uses Flexbox for layout */
+.stem-channel {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.stem-controls {
+  margin-right: 1rem;
+}
+
+.waveform {
   flex: 1;
-  padding: 20px;
-  overflow-y: auto;
+  background-color: #1b1b1b;
+  border: 1px solid #333;
+  height: 76px;
+  margin-bottom: 1rem;
+}
+
+.stem-controls h4 {
+  margin: 0;
+  flex: 1; /* pushes the buttons to the right */
+  font-size: 1.1rem;
+}
+
+.stem-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Responsive example: On small screens, stack everything */
+@media (max-width: 576px) {
+  .stem-channel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .waveform {
+    width: 100%;
+  }
+}
+
+/* ========== PlayerControls styles ========== */
+
+/* PlayerControls styles */
+.player-controls-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999; /* keep on top of other elements */
+  background-color: #2a2a2a;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #333;
+  display: flex;
+  flex-wrap: wrap; 
+  justify-content: space-between;
+}
+
+.player-controls-left {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.player-controls-center {
+  display: flex;
+  gap: 1rem;
+}
+
+.player-controls-right {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.zoom-slider {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bpm-label,
+.time-label {
+  font-size: 1rem;
+}
+
+/* Responsive example: On small screens, stack everything */
+@media (max-width: 576px) {
+  .player-controls-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .player-controls-left {
+    margin-bottom: 0.75rem;
+  }
 }
