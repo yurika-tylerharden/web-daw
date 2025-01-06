@@ -13,14 +13,8 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   const [assignedStems, setAssignedStems***REMOVED*** = useState({ Band: [***REMOVED***, Track: [***REMOVED***, Click: [***REMOVED*** });
 
   // State to track which groups are collapsed
-  // If true = collapsed, false = expanded
-  const [groupCollapsed, setGroupCollapsed***REMOVED*** = useState({
-    Band: false,
-    Track: false,
-    Click: false,
-  });
+  const [groupCollapsed, setGroupCollapsed***REMOVED*** = useState({ Band: false, Track: false, Click: false });
 
-  
   const isSeekingRef = useRef(false);
 
   useEffect(() => {
@@ -53,7 +47,9 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
         cursorColor: '#fff',        // cursor color
         height: 64,                 // wave height
         responsive: true,           // wave resizes with container
-        minWidth: 50,
+        minPxPerSec: 50,            // Minimum pixels per second
+        scrollParent: true,         // Scroll the container with the waveform
+        partialRender: true,        // Improve performance by rendering only visible parts
       });
       const encodedKey = encodeURIComponent(stem.file_path);
       const fileUrl = `/api/stems/${encodedKey}`;
@@ -98,16 +94,20 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   }, [assignedStems***REMOVED***);
 
   // Toggle collapsible group
-  // In your toggleGroupCollapse function
-
-  
   const toggleGroupCollapse = (group) => {
-    setGroupCollapsed((prev) => ({
-      ...prev,
-      [group***REMOVED***: !prev[group***REMOVED***,
-    }));
+    setGroupCollapsed((prev) => {
+      const newState = { ...prev, [group***REMOVED***: !prev[group***REMOVED*** };
+      // Hide or show the waveforms based on the new state
+      assignedStems[group***REMOVED***.forEach((stem) => {
+        const container = document.querySelector(`.stem-channel-${stem.index}`);
+        if (container) {
+          container.style.display = newState[group***REMOVED*** ? 'none' : 'block';
+        }
+      });
+      return newState;
+    });
   };
-  
+
   const handlePlayPause = () => {
     if (isPlaying) {
       waveSurfers.forEach((ws) => ws && ws.pause());
@@ -145,6 +145,11 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
     }
   };
 
+  /**
+   * Slightly improved "solo" logic
+   * If we solo a track, all non-solo tracks are muted unless they are also soloed.
+   * If no tracks are soloed, restore any mutes from the muteStatus.
+   */
   const handleSolo = (index) => {
     setSoloStatus((prev) => {
       const newSolo = { ...prev, [index***REMOVED***: !prev[index***REMOVED*** };
@@ -219,9 +224,9 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
           <div key={group} className="stems-group">
             <div className="stems-group-header" onClick={() => toggleGroupCollapse(group)}>
               <h3>{group}</h3>
-              {/* <span className="collapse-icon">
+              <span className="collapse-icon">
                 {groupCollapsed[group***REMOVED*** ? '▸' : '▾'}
-              </span> */}
+              </span>
             </div>
             {!groupCollapsed[group***REMOVED*** && (
               <div className="stems-group-body">
