@@ -17,7 +17,44 @@ body {
   height: 100%;
 }
 
+.songs-page {
+  padding: 2rem;
+}
 
+.songs-page-title {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.songs-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.song-card {
+  width: 18rem;
+  margin-bottom: 1rem;
+  background-color: #1b1b1b; /* Dark background color */
+  color: #fff; /* White text color */
+  border: 1px solid #333; /* Border color */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+  transition: transform 0.2s; /* Smooth transition for hover effect */
+}
+
+.song-card:hover {
+  transform: scale(1.05); /* Slightly enlarge the card on hover */
+}
+
+.song-card .card-body {
+  padding: 1rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
 
 /* ========== StemsPage styles ========== */
 .stems-page {
@@ -137,6 +174,9 @@ body {
 }
 
 .player-controls-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 1rem;
 }

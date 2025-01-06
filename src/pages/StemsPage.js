@@ -13,8 +13,14 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   const [assignedStems, setAssignedStems***REMOVED*** = useState({ Band: [***REMOVED***, Track: [***REMOVED***, Click: [***REMOVED*** });
 
   // State to track which groups are collapsed
-  const [groupCollapsed, setGroupCollapsed***REMOVED*** = useState({ Band: false, Track: false, Click: false });
+  // If true = collapsed, false = expanded
+  const [groupCollapsed, setGroupCollapsed***REMOVED*** = useState({
+    Band: false,
+    Track: false,
+    Click: false,
+  });
 
+  
   const isSeekingRef = useRef(false);
 
   useEffect(() => {
@@ -47,9 +53,7 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
         cursorColor: '#fff',        // cursor color
         height: 64,                 // wave height
         responsive: true,           // wave resizes with container
-        minPxPerSec: 50,            // Minimum pixels per second
-        scrollParent: true,         // Scroll the container with the waveform
-        partialRender: true,        // Improve performance by rendering only visible parts
+        minWidth: 50,
       });
       const encodedKey = encodeURIComponent(stem.file_path);
       const fileUrl = `/api/stems/${encodedKey}`;
@@ -94,20 +98,16 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   }, [assignedStems***REMOVED***);
 
   // Toggle collapsible group
-  const toggleGroupCollapse = (group) => {
-    setGroupCollapsed((prev) => {
-      const newState = { ...prev, [group***REMOVED***: !prev[group***REMOVED*** };
-      // Hide or show the waveforms based on the new state
-      assignedStems[group***REMOVED***.forEach((stem) => {
-        const container = document.querySelector(`.stem-channel-${stem.index}`);
-        if (container) {
-          container.style.display = newState[group***REMOVED*** ? 'none' : 'block';
-        }
-      });
-      return newState;
-    });
-  };
+  // In your toggleGroupCollapse function
 
+  
+  const toggleGroupCollapse = (group) => {
+    setGroupCollapsed((prev) => ({
+      ...prev,
+      [group***REMOVED***: !prev[group***REMOVED***,
+    }));
+  };
+  
   const handlePlayPause = () => {
     if (isPlaying) {
       waveSurfers.forEach((ws) => ws && ws.pause());
@@ -121,19 +121,16 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   const handleRewind = () => {
     waveSurfers.forEach((ws) => {
       if (!ws) return;
-      const newTime = Math.max(ws.getCurrentTime() - 15, 0);
-      ws.setCurrentTime(newTime);
+      ws.skip(15)
     });
-    setCurrentTime((prevTime) => Math.max(prevTime - 15, 0));
   };
 
   const handleSkip = () => {
     waveSurfers.forEach((ws) => {
       if (!ws) return;
-      const newTime = Math.min(ws.getCurrentTime() + 15, ws.getDuration());
-      ws.setCurrentTime(newTime);
+      ws.skip(15)
     });
-    setCurrentTime((prevTime) => Math.min(prevTime + 15, duration));
+    // setCurrentTime((prevTime) => Math.min(prevTime + 15, duration));
   };
 
   const handleMute = (index) => {
@@ -145,11 +142,6 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
     }
   };
 
-  /**
-   * Slightly improved "solo" logic
-   * If we solo a track, all non-solo tracks are muted unless they are also soloed.
-   * If no tracks are soloed, restore any mutes from the muteStatus.
-   */
   const handleSolo = (index) => {
     setSoloStatus((prev) => {
       const newSolo = { ...prev, [index***REMOVED***: !prev[index***REMOVED*** };
@@ -218,15 +210,15 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
 
   return (
     <div className="stems-page">
-      <h2 className="stems-page-title">{`Stems for ${songName} (BPM: ${bpm})`}</h2>
+      <h2 className="stems-page-title">{`${songName}`}</h2>
       <div className="stems-container">
         {['Band', 'Track', 'Click'***REMOVED***.map((group) => (
           <div key={group} className="stems-group">
             <div className="stems-group-header" onClick={() => toggleGroupCollapse(group)}>
               <h3>{group}</h3>
-              <span className="collapse-icon">
+              {/* <span className="collapse-icon">
                 {groupCollapsed[group***REMOVED*** ? '▸' : '▾'}
-              </span>
+              </span> */}
             </div>
             {!groupCollapsed[group***REMOVED*** && (
               <div className="stems-group-body">

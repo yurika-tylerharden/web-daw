@@ -1,46 +1,85 @@
-// SongsPage.js
+import React, { useState } from 'react';
+import { Card, Button, Modal, Form } from 'react-bootstrap';
 
-import { Table, Button } from 'react-bootstrap';
+const SongsPage = ({ songs, onSelectSong, onViewStems, fetchSongs }) => {
+  const [showEditModal, setShowEditModal***REMOVED*** = useState(false);
+  const [currentSong, setCurrentSong***REMOVED*** = useState(null);
+  const [newKey, setNewKey***REMOVED*** = useState('');
 
-const SongsPage = ({ songs, onSelectSong, onViewStems }) => {
-  if (!songs || songs.length === 0) {
-    return <p>No songs available</p>;
-  }
+  const handleEdit = (song) => {
+    setCurrentSong(song);
+    setNewKey(song.key);
+    setShowEditModal(true);
+  };
 
-  console.log('Songs:', songs);
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`/api/songs/${currentSong.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ key: newKey }),
+      });
+      if (response.ok) {
+        fetchSongs();
+        setShowEditModal(false);
+      } else {
+        console.error('Error updating song');
+      }
+    } catch (error) {
+      console.error('Error updating song:', error);
+    }
+  };
 
   return (
     <div className="songs-page">
-      <h2>Songs</h2>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Tempo (BPM)</th>
-            <th>Key</th>
-            <th>Number of Stems</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {songs.map((song) => (
-            <tr key={song.id} onClick={() => onSelectSong(song)}>
-              <td>{song.name}</td>
-              <td>{song.bpm}</td>
-              <td>{song.key}</td>
-              <td>{song.stems ? song.stems.length : 0}</td>
-              <td>
-                <Button variant="primary" onClick={(e) => {
-                  e.stopPropagation(); // Avoid selecting row if you only want to handle the button
-                  onViewStems(song);
-                }}>
-                  View Stems
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <h2 className="songs-page-title">Songs</h2>
+      <div className="songs-container">
+        {songs.map((song) => (
+          <Card key={song.id} className="song-card">
+            <Card.Body>
+              <Card.Title>{song.name}</Card.Title>
+              <Card.Text>
+                <strong>BPM:</strong> {song.bpm}<br />
+                <strong>Key:</strong> {song.key}<br />
+                <strong>Length:</strong> {song.length || 'N/A'}
+              </Card.Text>
+              <Button variant="primary" onClick={() => handleEdit(song)}>Edit</Button>
+              <Button variant="secondary" className="ml-2" onClick={(e) => {
+                e.stopPropagation();
+                onViewStems(song);
+              }}>View Stems</Button>
+            </Card.Body>
+          </Card>
+        ))}
+      </div>
+
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Song</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="formSongKey">
+              <Form.Label>Key</Form.Label>
+              <Form.Control
+                type="text"
+                value={newKey}
+                onChange={(e) => setNewKey(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleSave}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 
 const PlayerControls = ({
@@ -17,17 +17,13 @@ const PlayerControls = ({
     return `${minutes}:${seconds}`;
   };
 
-  const handlePause = () => {
-    if (isPlaying) {
-      handlePlayPause(); // simply call the toggle if playing
-    }
-  };
 
-  const handlePlay = () => {
-    if (!isPlaying) {
-      handlePlayPause(); // toggle if not playing
-    }
-  };
+
+  useEffect(() => {
+    // setTimeout(() => {
+    //   handleZoom(0); // Set initial zoom value to 0 when the component mounts
+    // }, 1000);
+  }, [handleZoom***REMOVED***);
 
   return (
     <div className="player-controls-footer">
@@ -42,12 +38,8 @@ const PlayerControls = ({
           -15s
         </Button>
 
-        <Button variant="primary" onClick={handlePlay}>
-          Play
-        </Button>
-
-        <Button variant="warning" onClick={handlePause}>
-          Pause
+        <Button onClick={handlePlayPause}>
+          {isPlaying ? 'Pause' : 'Play'}
         </Button>
 
         <Button variant="secondary" onClick={handleSkip}>
@@ -67,8 +59,7 @@ const PlayerControls = ({
             id="zoom"
             name="zoom"
             min="1"
-            max="200"
-            defaultValue="100"
+            max="200" // Set initial zoom value to 0
             onChange={(e) => handleZoom(e.target.value)}
           />
         </div>
