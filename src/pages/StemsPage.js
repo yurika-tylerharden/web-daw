@@ -11,6 +11,7 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   const [currentTime, setCurrentTime***REMOVED*** = useState(0);
   const [duration, setDuration***REMOVED*** = useState(0);
   const [assignedStems, setAssignedStems***REMOVED*** = useState({ Band: [***REMOVED***, Track: [***REMOVED***, Click: [***REMOVED*** });
+  const [loadingStatus, setLoadingStatus***REMOVED*** = useState({});
 
   // State to track which groups are collapsed
   // If true = collapsed, false = expanded
@@ -20,7 +21,6 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
     Click: false,
   });
 
-  
   const isSeekingRef = useRef(false);
 
   useEffect(() => {
@@ -36,6 +36,8 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   useEffect(() => {
     // Create an array of WaveSurfer instances after the DOM elements are rendered
     const waveSurferInstances = [***REMOVED***;
+    const initialLoadingStatus = {};
+
     // Flatten all stems from the three groups into one array
     const allStems = [...assignedStems.Band, ...assignedStems.Track, ...assignedStems.Click***REMOVED***;
 
@@ -59,6 +61,8 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
       const fileUrl = `/api/stems/${encodedKey}`;
 
       waveSurfer.load(fileUrl);
+
+      initialLoadingStatus[stem.index***REMOVED*** = true;
 
       // Sync seeking across waveSurfers
       waveSurfer.on('seek', (progress) => {
@@ -85,12 +89,17 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
           // If multiple stems have different durations, pick the max
           return Math.max(prevDuration, waveSurfer.getDuration());
         });
+        setLoadingStatus((prevStatus) => ({
+          ...prevStatus,
+          [stem.index***REMOVED***: false,
+        }));
       });
 
       waveSurferInstances[stem.index***REMOVED*** = waveSurfer;
     });
 
     setWaveSurfers(waveSurferInstances);
+    setLoadingStatus(initialLoadingStatus);
 
     return () => {
       waveSurferInstances.forEach((ws) => ws && ws.destroy());
@@ -98,16 +107,13 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   }, [assignedStems***REMOVED***);
 
   // Toggle collapsible group
-  // In your toggleGroupCollapse function
-
-  
   const toggleGroupCollapse = (group) => {
     setGroupCollapsed((prev) => ({
       ...prev,
       [group***REMOVED***: !prev[group***REMOVED***,
     }));
   };
-  
+
   const handlePlayPause = () => {
     if (isPlaying) {
       waveSurfers.forEach((ws) => ws && ws.pause());
@@ -208,6 +214,8 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
     }
   };
 
+  const allLoaded = Object.values(loadingStatus).every((status) => !status);
+
   return (
     <div className="stems-page">
       <h2 className="stems-page-title">{`${songName}`}</h2>
@@ -234,6 +242,7 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
                     handleAssign={handleAssign}
                     bandMembers={bandMembers}
                     hidden={groupCollapsed[group***REMOVED***} // <--- pass this down
+                    isLoading={loadingStatus[stem.index***REMOVED***} // Pass loading status
                   />
                 ))}
               </div>
@@ -252,6 +261,7 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
         duration={duration}
         bpm={bpm}
         handleZoom={handleZoom}
+        allLoaded={allLoaded} // Pass loading status
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dropdown } from 'react-bootstrap';
+import { Button, Dropdown, Spinner } from 'react-bootstrap';
 
 const StemChannel = ({
   stem,
@@ -11,6 +11,7 @@ const StemChannel = ({
   handleAssign,
   bandMembers,
   hidden,
+  isLoading,
 }) => {
   return (
     <div
@@ -57,7 +58,9 @@ const StemChannel = ({
       </div>
 
       {/* The waveform container remains in the DOM but simply hidden when 'hidden' is true */}
-      <div className="waveform" id={`waveform-${index}`} style={{ flex: 1, minWidth: '300px' }} />
+      <div className="waveform" id={`waveform-${index}`} style={{ flex: 1, minWidth: '300px' }}>
+        {isLoading && <Spinner animation="border" variant="light" />}
+      </div>
     </div>
   );
 };

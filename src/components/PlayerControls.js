@@ -10,6 +10,7 @@ const PlayerControls = ({
   duration,
   bpm,
   handleZoom,
+  allLoaded,
 }) => {
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -17,12 +18,8 @@ const PlayerControls = ({
     return `${minutes}:${seconds}`;
   };
 
-
-
   useEffect(() => {
-    // setTimeout(() => {
-    //   handleZoom(0); // Set initial zoom value to 0 when the component mounts
-    // }, 1000);
+    handleZoom(0); // Set initial zoom value to 0 when the component mounts
   }, [handleZoom***REMOVED***);
 
   return (
@@ -34,17 +31,17 @@ const PlayerControls = ({
 
       {/* Center area: Rewind, Play, Pause, Skip */}
       <div className="player-controls-center">
-        <Button variant="secondary" onClick={handleRewind}>
+        {/* <Button variant="secondary" onClick={handleRewind}>
           -15s
-        </Button>
+        </Button> */}
 
-        <Button onClick={handlePlayPause}>
+        <Button onClick={handlePlayPause} disabled={!allLoaded}>
           {isPlaying ? 'Pause' : 'Play'}
         </Button>
 
-        <Button variant="secondary" onClick={handleSkip}>
+        {/* <Button variant="secondary" onClick={handleSkip}>
           +15s
-        </Button>
+        </Button> */}
       </div>
 
       {/* Right side: Time Display and Zoom Slider */}
@@ -59,7 +56,8 @@ const PlayerControls = ({
             id="zoom"
             name="zoom"
             min="1"
-            max="200" // Set initial zoom value to 0
+            max="200"
+            defaultValue="0" // Set initial zoom value to 0
             onChange={(e) => handleZoom(e.target.value)}
           />
         </div>
