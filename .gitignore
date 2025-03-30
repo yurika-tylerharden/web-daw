@@ -27,4 +27,5 @@ yarn-error.log*
 /backend/node_modules
 /backend/data
 
-.wrangler/
+/.wrangler
+/.vscode
