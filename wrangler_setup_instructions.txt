@@ -1,2 +1,43 @@
 npm run build
 wrangler pages dev build
+
+wrangler dev --remote    
+
+wrangler publish
+
+fetch D1 data
+wrangler d1 execute web-daw --file backend/db/schema.sql 
+
+wrangler d1 execute web-daw --command "SELECT * FROM songs;"
+
+wrangler d1 execute web-daw --command """DROP TABLE IF EXISTS songs;                                                 
+CREATE TABLE IF NOT EXISTS songs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,           
+    bpm INTEGER NOT NULL,                      
+    length INTEGER NOT NULL,                    
+    key TEXT                                     
+);                          
+
+DROP TABLE IF EXISTS stems;      
+CREATE TABLE IF NOT EXISTS stems (       
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    song_id INTEGER NOT NULL,                  
+    stem_name TEXT NOT NULL,                     
+    file_path TEXT NOT NULL,                                                                                                                   <....
+
+
+npx wrangler r2 bucket list   
+wrangler r2 bucket create web-daw-dev                       
+
+wrangler r2 object list web-daw > remote_objects.txt  
+wrangler r2 object get web-daw/example.txt --local   
+
+wrangler r2 object list web-daw --json                                 
+
+
+ls -l .wrangler/r1    
+
+
+wrangler r2 object list web-daw --local         
+wrangler r2 object list web-daw                                        
