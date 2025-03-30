@@ -33,6 +33,9 @@ Refer to [api-functions.md](api-functions.md) for detailed API documentation. Be
 - `GET /api/stems/:key` - Fetch a single file
 - `DELETE /api/stems/:key` - Remove a file from R2
 
+## Secrets
+Keys are stored as environmental variables in for the R2 object storage and D1 database.
+
 ## Setup Instructions
 
 ### Prerequisites
@@ -41,45 +44,45 @@ Refer to [api-functions.md](api-functions.md) for detailed API documentation. Be
 
 ### Installation
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo/web-daw.git
-   cd web-daw
+```bash
+git clone https://github.com/your-repo/web-daw.git
+cd web-daw
 ```
 2. Install dependencies:
-```
+```bash
 npm install
 ```
-Development
+**Development**
 Start the React development server:
-```
+```bash
 npm start
 ```
 3. Start the Cloudflare Workers development server:
-```
+```bash
 wrangler pages dev build
 ```
-Build
+**Build**
 To build the React app for production:
-```
+```bash
 npm run build
 ```
-Deployment
+**Deployment**
 Publish the Cloudflare Worker:
-```
+```bash
 wrangler publish
 ```
-Database Setup
+**Database Setup**
 To initialize the D1 database schema:
-```
+```bash
 wrangler d1 execute web-daw --file [schema.sql](http://_vscodecontentref_/0)
 ```
-R2 Bucket Setup
+**R2 Bucket Setup**
 Create an R2 bucket:
-```
+```bash
 wrangler r2 bucket create web-daw-dev
 ```
 List objects in the bucket:
-```
+```bash
 wrangler r2 object list web-daw
 ```
 
