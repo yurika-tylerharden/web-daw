@@ -1,0 +1,21 @@
+name = "web-daw"
+compatibility_date = "2023-10-01"
+
+
+account_id = "9c3540b3cba2b51ebc4d13b71656bd82"
+workers_dev = true
+
+main = "backend/worker.js" 
+
+[[d1_databases]]
+binding = "DB" 
+database_name = "web-daw"
+database_id = "87691ca0-c079-4ab1-8b16-7d76cb93cdfa"
+
+[[r2_buckets]]
+binding = "STEMS_BUCKET" 
+bucket_name = "web-daw"
+
+[vars]
+ACCOUNT_ID = "9c3540b3cba2b51ebc4d13b71656bd82"
+BUCKET_NAME = "web-daw"
