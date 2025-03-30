@@ -24,13 +24,13 @@ const StemChannel = ({
         <h4>{stem.stem_name}</h4>
         <div className="stem-buttons">
           <Button
-            variant={muteStatus[index***REMOVED*** ? 'secondary' : 'danger'}
+            variant={muteStatus[index] ? 'secondary' : 'danger'}
             onClick={() => handleMute(index)}
           >
-            {muteStatus[index***REMOVED*** ? 'Unmute' : 'Mute'}
+            {muteStatus[index] ? 'Unmute' : 'Mute'}
           </Button>
           <Button
-            variant={soloStatus[index***REMOVED*** ? 'primary' : 'secondary'}
+            variant={soloStatus[index] ? 'primary' : 'secondary'}
             onClick={() => handleSolo(index)}
           >
             Solo

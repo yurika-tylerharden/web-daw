@@ -6,11 +6,11 @@ import BandPage from './pages/BandPage';
 import TestMultitrack from './pages/TestMultitrack';
 
 const App = () => {
-  const [currentTab, setCurrentTab***REMOVED*** = useState('songs');
-  const [songs, setSongs***REMOVED*** = useState([***REMOVED***);
-  const [loading, setLoading***REMOVED*** = useState(true);
-  const [selectedSong, setSelectedSong***REMOVED*** = useState(null);
-  const [bandMembers, setBandMembers***REMOVED*** = useState([***REMOVED***);
+  const [currentTab, setCurrentTab] = useState('songs');
+  const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedSong, setSelectedSong] = useState(null);
+  const [bandMembers, setBandMembers] = useState([]);
 
   const fetchSongs = async () => {
     try {
@@ -37,7 +37,7 @@ const App = () => {
   useEffect(() => {
     fetchSongs();
     fetchBandMembers();
-  }, [***REMOVED***);
+  }, []);
 
   const handleViewStems = (song) => {
     setSelectedSong(song);

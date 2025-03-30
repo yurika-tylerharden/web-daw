@@ -1,4 +1,4 @@
-// functions/api/stems/[key***REMOVED***.js
+// functions/api/stems/[key].js
 
 export const onRequestGet = async ({ env, params }) => {
     try {

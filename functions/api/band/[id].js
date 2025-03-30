@@ -1,4 +1,4 @@
-// functions/api/band/[id***REMOVED***.js
+// functions/api/band/[id].js
 
 export const onRequestGet = async ({ env, params }) => {
     const { id } = params;

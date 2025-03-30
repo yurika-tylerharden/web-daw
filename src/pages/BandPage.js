@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form } from 'react-bootstrap';
 
 const BandPage = () => {
-  const [members, setMembers***REMOVED*** = useState([***REMOVED***);
-  const [showModal, setShowModal***REMOVED*** = useState(false);
-  const [currentMember, setCurrentMember***REMOVED*** = useState(null);
-  const [memberName, setMemberName***REMOVED*** = useState('');
-  const [instrument, setInstrument***REMOVED*** = useState('');
-  const [colour, setColour***REMOVED*** = useState('');
+  const [members, setMembers] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [currentMember, setCurrentMember] = useState(null);
+  const [memberName, setMemberName] = useState('');
+  const [instrument, setInstrument] = useState('');
+  const [colour, setColour] = useState('');
 
   useEffect(() => {
     // Fetch all band members from the new endpoint: /api/band
@@ -24,7 +24,7 @@ const BandPage = () => {
       }
     };
     fetchMembers();
-  }, [***REMOVED***);
+  }, []);
 
   const handleOpenModal = (member) => {
     setCurrentMember(member);
@@ -72,7 +72,7 @@ const BandPage = () => {
         setMembers((prev) => [
           ...prev,
           { ...memberData, id: newMember.id },
-        ***REMOVED***);
+        ]);
       }
       setShowModal(false);
     } catch (error) {

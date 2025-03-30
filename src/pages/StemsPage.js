@@ -4,18 +4,18 @@ import StemChannel from '../components/StemChannel';
 import PlayerControls from '../components/PlayerControls';
 
 const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
-  const [waveSurfers, setWaveSurfers***REMOVED*** = useState([***REMOVED***);
-  const [isPlaying, setIsPlaying***REMOVED*** = useState(false);
-  const [muteStatus, setMuteStatus***REMOVED*** = useState({});
-  const [soloStatus, setSoloStatus***REMOVED*** = useState({});
-  const [currentTime, setCurrentTime***REMOVED*** = useState(0);
-  const [duration, setDuration***REMOVED*** = useState(0);
-  const [assignedStems, setAssignedStems***REMOVED*** = useState({ Band: [***REMOVED***, Track: [***REMOVED***, Click: [***REMOVED*** });
-  const [loadingStatus, setLoadingStatus***REMOVED*** = useState({});
+  const [waveSurfers, setWaveSurfers] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [muteStatus, setMuteStatus] = useState({});
+  const [soloStatus, setSoloStatus] = useState({});
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [assignedStems, setAssignedStems] = useState({ Band: [], Track: [], Click: [] });
+  const [loadingStatus, setLoadingStatus] = useState({});
 
   // State to track which groups are collapsed
   // If true = collapsed, false = expanded
-  const [groupCollapsed, setGroupCollapsed***REMOVED*** = useState({
+  const [groupCollapsed, setGroupCollapsed] = useState({
     Band: false,
     Track: false,
     Click: false,
@@ -25,21 +25,21 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
 
   useEffect(() => {
     // Initialize assigned stems
-    const initialAssignedStems = { Band: [***REMOVED***, Track: [***REMOVED***, Click: [***REMOVED*** };
+    const initialAssignedStems = { Band: [], Track: [], Click: [] };
     stems.forEach((stem, index) => {
       const group = stem.stem_group || 'Band';
-      initialAssignedStems[group***REMOVED***.push({ ...stem, index });
+      initialAssignedStems[group].push({ ...stem, index });
     });
     setAssignedStems(initialAssignedStems);
-  }, [stems***REMOVED***);
+  }, [stems]);
 
   useEffect(() => {
     // Create an array of WaveSurfer instances after the DOM elements are rendered
-    const waveSurferInstances = [***REMOVED***;
+    const waveSurferInstances = [];
     const initialLoadingStatus = {};
 
     // Flatten all stems from the three groups into one array
-    const allStems = [...assignedStems.Band, ...assignedStems.Track, ...assignedStems.Click***REMOVED***;
+    const allStems = [...assignedStems.Band, ...assignedStems.Track, ...assignedStems.Click];
 
     allStems.forEach((stem) => {
       const container = document.getElementById(`waveform-${stem.index}`);
@@ -62,7 +62,7 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
 
       waveSurfer.load(fileUrl);
 
-      initialLoadingStatus[stem.index***REMOVED*** = true;
+      initialLoadingStatus[stem.index] = true;
 
       // Sync seeking across waveSurfers
       waveSurfer.on('seek', (progress) => {
@@ -91,11 +91,11 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
         });
         setLoadingStatus((prevStatus) => ({
           ...prevStatus,
-          [stem.index***REMOVED***: false,
+          [stem.index]: false,
         }));
       });
 
-      waveSurferInstances[stem.index***REMOVED*** = waveSurfer;
+      waveSurferInstances[stem.index] = waveSurfer;
     });
 
     setWaveSurfers(waveSurferInstances);
@@ -104,13 +104,13 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
     return () => {
       waveSurferInstances.forEach((ws) => ws && ws.destroy());
     };
-  }, [assignedStems***REMOVED***);
+  }, [assignedStems]);
 
   // Toggle collapsible group
   const toggleGroupCollapse = (group) => {
     setGroupCollapsed((prev) => ({
       ...prev,
-      [group***REMOVED***: !prev[group***REMOVED***,
+      [group]: !prev[group],
     }));
   };
 
@@ -140,18 +140,18 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
   };
 
   const handleMute = (index) => {
-    const isMuted = !muteStatus[index***REMOVED***;
-    setMuteStatus((prev) => ({ ...prev, [index***REMOVED***: isMuted }));
+    const isMuted = !muteStatus[index];
+    setMuteStatus((prev) => ({ ...prev, [index]: isMuted }));
 
-    if (waveSurfers[index***REMOVED***) {
-      waveSurfers[index***REMOVED***.setMute(isMuted);
+    if (waveSurfers[index]) {
+      waveSurfers[index].setMute(isMuted);
     }
   };
 
   const handleSolo = (index) => {
     setSoloStatus((prev) => {
-      const newSolo = { ...prev, [index***REMOVED***: !prev[index***REMOVED*** };
-      const soloedTracks = Object.keys(newSolo).filter((key) => newSolo[key***REMOVED***);
+      const newSolo = { ...prev, [index]: !prev[index] };
+      const soloedTracks = Object.keys(newSolo).filter((key) => newSolo[key]);
 
       if (soloedTracks.length > 0) {
         // Mute all non-solo tracks
@@ -167,7 +167,7 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
         // If no solos, restore to "muteStatus"
         waveSurfers.forEach((ws, i) => {
           if (!ws) return;
-          ws.setMute(!!muteStatus[i***REMOVED***);
+          ws.setMute(!!muteStatus[i]);
         });
       }
 
@@ -181,15 +181,15 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
 
   const handleAssign = async (stemIndex, stemGroup) => {
     const updatedStems = { ...assignedStems };
-    const stem = stems[stemIndex***REMOVED***;
+    const stem = stems[stemIndex];
 
     // Remove stem from its current group
     Object.keys(updatedStems).forEach((group) => {
-      updatedStems[group***REMOVED*** = updatedStems[group***REMOVED***.filter((s) => s.index !== stemIndex);
+      updatedStems[group] = updatedStems[group].filter((s) => s.index !== stemIndex);
     });
 
     // Add stem to the new group
-    updatedStems[stemGroup***REMOVED***.push({ ...stem, index: stemIndex });
+    updatedStems[stemGroup].push({ ...stem, index: stemIndex });
 
     setAssignedStems(updatedStems);
 
@@ -220,17 +220,17 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
     <div className="stems-page">
       <h2 className="stems-page-title">{`${songName}`}</h2>
       <div className="stems-container">
-        {['Band', 'Track', 'Click'***REMOVED***.map((group) => (
+        {['Band', 'Track', 'Click'].map((group) => (
           <div key={group} className="stems-group">
             <div className="stems-group-header" onClick={() => toggleGroupCollapse(group)}>
               <h3>{group}</h3>
               {/* <span className="collapse-icon">
-                {groupCollapsed[group***REMOVED*** ? '▸' : '▾'}
+                {groupCollapsed[group] ? '▸' : '▾'}
               </span> */}
             </div>
-            {!groupCollapsed[group***REMOVED*** && (
+            {!groupCollapsed[group] && (
               <div className="stems-group-body">
-                {assignedStems[group***REMOVED***.map((stem) => (
+                {assignedStems[group].map((stem) => (
                   <StemChannel
                     key={stem.index}
                     stem={stem}
@@ -241,8 +241,8 @@ const StemsPage = ({ stems, songName, bpm, bandMembers, onGroupChange }) => {
                     handleSolo={handleSolo}
                     handleAssign={handleAssign}
                     bandMembers={bandMembers}
-                    hidden={groupCollapsed[group***REMOVED***} // <--- pass this down
-                    isLoading={loadingStatus[stem.index***REMOVED***} // Pass loading status
+                    hidden={groupCollapsed[group]} // <--- pass this down
+                    isLoading={loadingStatus[stem.index]} // Pass loading status
                   />
                 ))}
               </div>

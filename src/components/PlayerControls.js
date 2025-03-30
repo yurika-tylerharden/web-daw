@@ -20,7 +20,7 @@ const PlayerControls = ({
 
   useEffect(() => {
     handleZoom(0); // Set initial zoom value to 0 when the component mounts
-  }, [handleZoom***REMOVED***);
+  }, [handleZoom]);
 
   return (
     <div className="player-controls-footer">

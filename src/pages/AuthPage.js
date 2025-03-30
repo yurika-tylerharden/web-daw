@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import './AuthPage.css'; // Create simple styling for the black background
 
 const AuthPage = ({ onAuthSuccess }) => {
-    const [password, setPassword***REMOVED*** = useState('');
-    const [error, setError***REMOVED*** = useState(false);
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(false);
 
     const handleLogin = () => {
         if (password === "!dasteworld!") {

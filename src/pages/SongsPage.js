@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Card, Button, Modal, Form } from 'react-bootstrap';
 
 const SongsPage = ({ songs, onSelectSong, onViewStems, fetchSongs }) => {
-  const [showEditModal, setShowEditModal***REMOVED*** = useState(false);
-  const [currentSong, setCurrentSong***REMOVED*** = useState(null);
-  const [newKey, setNewKey***REMOVED*** = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [currentSong, setCurrentSong] = useState(null);
+  const [newKey, setNewKey] = useState('');
 
   const handleEdit = (song) => {
     setCurrentSong(song);

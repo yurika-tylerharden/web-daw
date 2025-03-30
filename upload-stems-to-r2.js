@@ -12,7 +12,7 @@ if (!fs.existsSync(stemsFolderPath)) {
 }
 
 // Supported file extensions
-const supportedExtensions = ['.wav', '.mp3', '.m4a'***REMOVED***;
+const supportedExtensions = ['.wav', '.mp3', '.m4a'];
 
 // Iterate through each file in the folder
 fs.readdirSync(stemsFolderPath).forEach((file) => {

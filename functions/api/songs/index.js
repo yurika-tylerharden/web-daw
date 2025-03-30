@@ -15,7 +15,7 @@ export const onRequestGet = async ({ env }) => {
           // Include stems array in the returned song object
           return {
             ...song,
-            stems: stemsData.results || [***REMOVED***,
+            stems: stemsData.results || [],
           };
         })
       );

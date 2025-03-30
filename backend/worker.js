@@ -91,7 +91,7 @@
 //     const songsWithStems = await Promise.all(
 //       results.map(async (song) => {
 //         const stems = await env.DB.prepare('SELECT * FROM stems WHERE song_id = ?').bind(song.id).all();
-//         return { ...song, stems: stems.results || [***REMOVED*** };
+//         return { ...song, stems: stems.results || [] };
 //       })
 //     );
 //     return new Response(JSON.stringify(songsWithStems), {
@@ -226,7 +226,7 @@
 //   const region = "auto";
 //   const service = "s3";
 
-//   const isoDate = new Date().toISOString().replace(/[:-***REMOVED***/g, "").split(".")[0***REMOVED*** + "Z"; // ISO8601
+//   const isoDate = new Date().toISOString().replace(/[:-]/g, "").split(".")[0] + "Z"; // ISO8601
 //   const shortDate = isoDate.slice(0, 8); // YYYYMMDD
 
 //   const credentialScope = `${shortDate}/${region}/${service}/aws4_request`;
@@ -243,7 +243,7 @@
 //     canonicalHeaders,
 //     signedHeaders,
 //     "UNSIGNED-PAYLOAD",
-//   ***REMOVED***.join("\n");
+//   ].join("\n");
 
 //   console.log("Canonical Request:", canonicalRequest);
 
@@ -260,7 +260,7 @@
 //     isoDate,
 //     credentialScope,
 //     hashedCanonicalRequest,
-//   ***REMOVED***.join("\n");
+//   ].join("\n");
 
 //   console.log("String to Sign:", stringToSign);
 
@@ -285,7 +285,7 @@
 //     encoder.encode(key),
 //     { name: "HMAC", hash: "SHA-256" },
 //     false,
-//     ["sign"***REMOVED***
+//     ["sign"]
 //   );
 //   const signature = await crypto.subtle.sign("HMAC", cryptoKey, encoder.encode(data));
 //   return Array.from(new Uint8Array(signature))

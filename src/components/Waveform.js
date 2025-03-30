@@ -25,7 +25,7 @@ const Waveform = ({ audioFile }) => {
                 waveSurferRef.current = null;
             }
         };
-    }, [audioFile***REMOVED***);
+    }, [audioFile]);
 
     return <div ref={waveformRef} style={{ width: '100%' }} />;
 };

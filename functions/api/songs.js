@@ -14,7 +14,7 @@ export const onRequestGet = async ({ env }) => {
         const stems = await env.DB.prepare('SELECT * FROM stems WHERE song_id = ?')
           .bind(song.id)
           .all();
-        return { ...song, stems: stems.results || [***REMOVED*** };
+        return { ...song, stems: stems.results || [] };
       })
     );
     return new Response(JSON.stringify(songsWithStems), {

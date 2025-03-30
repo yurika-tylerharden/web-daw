@@ -3,7 +3,7 @@
 
 // const TestMultitrack = () => {
 //     const containerRef = useRef(null);
-//     const [multitrack, setMultitrack***REMOVED*** = useState(null);
+//     const [multitrack, setMultitrack] = useState(null);
     
 //     useEffect(() => {
 //         // Fetch the list of stems from the backend
@@ -43,7 +43,7 @@
 //                           { time: 10, volume: 0.8 },
 //                           { time: 255, volume: 0.8 },
 //                           { time: 264, volume: 0 },
-//                         ***REMOVED***,
+//                         ],
 //                         volume: 0.95,
 //                         options: {
 //                           waveColor: 'hsl(46, 87%, 49%)',
@@ -75,8 +75,8 @@
 //                             label: 'M4',
 //                             color: 'hsla(200, 50%, 70%, 0.5)',
 //                           },
-//                         ***REMOVED***,
-//                         // peaks: [ [ 0, 0, 2.567, -2.454, 10.5645 ***REMOVED*** ***REMOVED***, // optional pre-generated peaks
+//                         ],
+//                         // peaks: [ [ 0, 0, 2.567, -2.454, 10.5645 ] ], // optional pre-generated peaks
 //                       },
 //                       {
 //                         id: 2,
@@ -105,7 +105,7 @@
 //                         },
 //                         url: 'backend/data/stems/AROUND_110_ BASS GTR CRUNCH.wav',
 //                       },
-//                 ***REMOVED***, {
+//                 ], {
 //                     container: containerRef.current, // required!
 //                     minPxPerSec: 20, // zoom level
 //                     cursorWidth: 2,
@@ -128,7 +128,7 @@
 //                 multitrack.destroy();
 //             }
 //         };
-//     }, [***REMOVED***);
+//     }, []);
 
 //     const handlePlayPause = () => {
 //         if (multitrack) {
